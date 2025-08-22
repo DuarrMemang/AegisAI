@@ -124,16 +124,20 @@ def buyer(use_thread_lock: bool = True):
     )
     print(f"Relevant agents: {relevant_agents}")
 
-    # Pick one of the agents based on your criteria (in this example we just pick the first one)
     chosen_agent = relevant_agents[0]
 
-    # Pick one of the service offerings based on your criteria (in this example we just pick the first one)
-    chosen_job_offering = chosen_agent.offerings[0]
+    chosen_job_offering = next(
+        off for off in chosen_agent.offerings if off.name == "crypto_news_analysis_report"
+    )
+
 
     with initiate_job_lock:
-        text_to_check = "Free shots and beer buckets in party town at centre of suspected methanol deaths"
+        post_text="Kanye West's New Solana-Based Token Triggers Buying Spree"
         job_id = chosen_job_offering.initiate_job(
-            service_requirement={"text_to_check": text_to_check},
+            service_requirement={
+                "service_type": "crypto_news_analysis_report",
+                "post_text": post_text
+            },
             evaluator_address=env.BUYER_AGENT_WALLET_ADDRESS,
             expired_at=datetime.now() + timedelta(days=1)
         )

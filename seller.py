@@ -86,32 +86,40 @@ def seller(use_thread_lock: bool = True):
 
     def process_job(job: ACPJob, memo_to_sign: Optional[ACPMemo] = None):
         if (
-                job.phase == ACPJobPhase.REQUEST and
-                memo_to_sign is not None and
-                memo_to_sign.next_phase == ACPJobPhase.NEGOTIATION
+            job.phase == ACPJobPhase.REQUEST and
+            memo_to_sign is not None and
+            memo_to_sign.next_phase == ACPJobPhase.NEGOTIATION
         ):
             job.respond(True)
+
         elif (
-                job.phase == ACPJobPhase.TRANSACTION and
-                memo_to_sign is not None and
-                memo_to_sign.next_phase == ACPJobPhase.EVALUATION
+            job.phase == ACPJobPhase.TRANSACTION and
+            memo_to_sign is not None and
+            memo_to_sign.next_phase == ACPJobPhase.EVALUATION
         ):
             print(f"Delivering job {job.id}")
-            text_to_check = job.service_requirement.get("text_to_check")
-            if text_to_check:
-                output = main(text_to_check)
-                deliverable = IDeliverable(
-                    type="news_value",
-                    value=output
-                )
-                job.deliver(deliverable)
-            else: 
-                job.deliver("No news found")
 
-        elif job.phase == ACPJobPhase.COMPLETED:
-            print("Job completed", job)
-        elif job.phase == ACPJobPhase.REJECTED:
-            print("Job rejected", job)
+            service_type = job.service_requirement.get("service_type")
+            post_text = job.service_requirement.get("post_text")
+
+            if not post_text:
+                job.deliver("No input text provided")
+                return
+
+            if service_type == "general_news_check":
+                output = main(post_text)
+                deliverable = IDeliverable(type="news_value", value=output)
+            
+            elif service_type == "crypto_news_analysis_report":
+                from crypto_news_checker_app import main as crypto_main
+                report = crypto_main(post_text)
+
+                deliverable = IDeliverable(type="report",value=report)
+
+            else:
+                deliverable = IDeliverable(type="error", value="Unknown service_type")
+
+            job.deliver(deliverable)
 
     threading.Thread(target=job_worker, daemon=True).start()
 
