@@ -131,9 +131,9 @@ def buyer(use_thread_lock: bool = True):
     chosen_job_offering = chosen_agent.offerings[0]
 
     with initiate_job_lock:
-        news_url = "https://fmobserver.com/fargo-man-arrested-for-clearing-snow-with-flamethrower/"
+        text_to_check = "Free shots and beer buckets in party town at centre of suspected methanol deaths"
         job_id = chosen_job_offering.initiate_job(
-            service_requirement={"news_url": news_url},
+            service_requirement={"text_to_check": text_to_check},
             evaluator_address=env.BUYER_AGENT_WALLET_ADDRESS,
             expired_at=datetime.now() + timedelta(days=1)
         )

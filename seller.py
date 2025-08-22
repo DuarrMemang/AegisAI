@@ -97,9 +97,9 @@ def seller(use_thread_lock: bool = True):
                 memo_to_sign.next_phase == ACPJobPhase.EVALUATION
         ):
             print(f"Delivering job {job.id}")
-            news_url = job.service_requirement.get("news_url")
-            if news_url:
-                output = main(news_url)
+            text_to_check = job.service_requirement.get("text_to_check")
+            if text_to_check:
+                output = main(text_to_check)
                 deliverable = IDeliverable(
                     type="news_value",
                     value=output
