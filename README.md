@@ -1,8 +1,3 @@
-
-
-Here's the updated README:
-
-
 **AegisAI README** 
 =======================
 
@@ -75,8 +70,6 @@ To deploy AegisAI, you can use a cloud platform like Google Cloud or AWS. Here a
 * If you encounter issues with the Google GenAI API, check your API key and ensure that the API is enabled in your cloud project
 * If you encounter issues with the `langchain-core` or `langchain-google-genai` libraries, check the library documentation and ensure that you have the latest versions installed
 
-**Contributing** 
------------------
 
 Contributions are welcome! If you'd like to contribute to AegisAI, please fork the repository and submit a pull request with your changes.
 
